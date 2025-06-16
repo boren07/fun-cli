@@ -31,6 +31,9 @@ impl CombineHandler {
             Commands::Music(handler) => {
                 Ok(Box::new(handler))
             }
+            Commands::Curl(handler) => {
+                Ok(Box::new(handler))
+            }
             _ => {
                 Err(CliError::NoMatchHandlerError)
             }

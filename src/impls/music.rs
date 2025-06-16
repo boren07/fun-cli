@@ -34,7 +34,7 @@ impl MusicHandler {
     pub fn get_internet_source<R>(name: &str) -> R
         where R: Read + Seek + Send + Sync + 'static
     {
-
+        todo!()
     }
 
     /// 结合 rodio 的播放控制 + 定时频谱刷新

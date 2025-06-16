@@ -1,11 +1,12 @@
 use clap::{Command, Parser, Subcommand};
 use crate::error::CliError;
+use crate::impls::curl::CurlHandler;
 use crate::impls::music::MusicHandler;
 use crate::impls::handlers::{CombineHandler, CommandHandler};
 use crate::impls::weather::WeatherHandler;
 
 #[derive(Debug, Parser)]
-#[command(name = "fun", version, about, long_about)]
+#[command(name = "fun", author, version, about, long_about)]
 pub struct FunCli {
 
     #[command(subcommand)]
@@ -15,11 +16,14 @@ pub struct FunCli {
 #[derive(Debug, Subcommand)]
 pub enum Commands {
     //天气系统
-    #[command(name = "weather", version, about = "查询各地天气情况")]
+    #[command(name = "weather", version, about = "天气系统")]
     Weather(WeatherHandler),
     //音乐系统
     #[command(name = "music", version, about = "音乐系统")]
     Music(MusicHandler),
+
+    #[command(name = "curl", version, about = "curl系统")]
+    Curl(CurlHandler),
 }
 
 impl Commands {
