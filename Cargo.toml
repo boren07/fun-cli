@@ -10,7 +10,7 @@ license = "Apache-2.0"
 [dependencies]
 clap = { version = "4.5.39", features = ["derive"] }
 # 读取音频文件
-rodio = { version = "0.17", features = ["mp3", "flac"] }
+rodio = { version = "0.19.0", features = ["mp3", "flac"] }
 # 音频fft处理 信号转换
 rustfft = { version = "6.1" }
 # 序列化工具
@@ -19,3 +19,7 @@ serde_json = { version = "1.0.128" }
 
 #  网络请求
 reqwest = { version = "0.12.7" ,features = ["blocking",  "json", "gzip","multipart"]}
+
+[[bin]]
+name = "fun"
+path = "src/main.rs"
