@@ -5,10 +5,9 @@
 > *"Life is too short for boring CLI tools."*
 
 **`fun-cli` is a constantly growing command-line entertainment toolkit** designed for those who find work boring. Here, you can:
-- ☔ Get weather updates with some sarcasm (*“It's raining today, perfect for staying home and writing bugs”*)
-- 🎵 Play music with an ASCII spectrum (*pretend you're in The Matrix*)
+- ☔ Get weather updates with some sarcasm 
+- 🎵 Play music with an ASCII spectrum 
 - 🕹️ Play Tetris (*the boss key is hidden, press `Ctrl + C` to exit*)
-- 🤖 Let AI tell you cheesy jokes (*“Why do programmers confuse Halloween and Christmas? Because Oct 31 == Dec 25!”*)
 - ...**or contribute your own creative ideas!**
 
 [![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)

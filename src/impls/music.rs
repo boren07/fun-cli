@@ -10,6 +10,9 @@ use serde::Deserialize;
 use std::io::{BufReader, Cursor, Read, Seek};
 use std::ops::Deref;
 use std::time::{Duration, Instant};
+use colored::Colorize;
+use url::form_urlencoded;
+use crate::utils::chars;
 
 #[derive(Debug,Parser)]
 pub struct MusicHandler {
@@ -39,9 +42,7 @@ struct NetCloudMusic {
     link: String,
 }
 const BARS: [char; 8] = [' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇'];
-// 蓝色频谱的ANSI颜色码
-const BLUE_START: &str = "\x1B[34m";
-const BLUE_END: &str = "\x1B[0m";
+
 impl MusicHandler {
 
     const MUSIC_API: &'static str = "https://api.bakaomg.cn/v1/music/netease/search?keyword={keyword}";
@@ -57,7 +58,8 @@ impl MusicHandler {
 
     pub fn get_internet_music(&self,client: &Client) -> Result<NetCloudMusic, Box<dyn std::error::Error>>
     {
-        let response = client.get(Self::MUSIC_API.replace("{keyword}",&self.name)).send()?.error_for_status()?;
+        let name = form_urlencoded::byte_serialize((&self.name).as_bytes()).collect::<String>();
+        let response = client.get(Self::MUSIC_API.replace("{keyword}",&name)).send()?.error_for_status()?;
         let res: serde_json::Value = response.json()?;
         if let Some(data) = res["data"].as_object() {
             if let Some(list) = data["list"].as_array() {
@@ -145,17 +147,16 @@ impl CommandHandler for MusicHandler {
         };
 
         println!("🎶 播放中 (按 Ctrl+C 停止)\n");
-        print!("\x1B[2J\x1B[H"); // 清屏并重置光标
+        print!("{}", chars::CLEAR); // 清屏并重置光标
 
         // 4. 初始化FFT
         let mut planner = FftPlanner::<f32>::new();
         let window_size = 1024;
         let fft = planner.plan_fft_forward(window_size);
 
-        // 显示布局
+        // 置顶布局
         print!("\x1B[1;1H");
         println!("🎹  实时频谱:{}({}):-{}", &music.title,&music.album,&music.artist);
-        // println!("{}{}", BLUE_START, BLUE_END);
         print!("\x1B[3;1H");
         println!("播放进度:");
 
@@ -177,7 +178,7 @@ impl CommandHandler for MusicHandler {
 
             // 更新显示
             print!("\x1B[2;1H\x1B[2K");
-            print!("{}{}{}", BLUE_START, ascii_bars, BLUE_END);
+            print!("{}",ascii_bars.bright_green().bold());
             print!("\x1B[4;1H\x1B[2K");
             println!("{:.1}% [{}{}] {:.1}/{:.1}s",
                      progress * 100.0,
@@ -192,7 +193,7 @@ impl CommandHandler for MusicHandler {
             if progress >= 1.0 || sink.as_ref().map_or_else(|| false, |sink| sink.empty()) {
                 is_playing = false;
                 print!("\x1B[2;1H\x1B[2K");
-                println!("{}██████████████████████████████████████████████████{}", BLUE_START, BLUE_END);
+                println!("{}", "██████████████████████████████████████████████████".bright_green().bold());
                 print!("\x1B[4;1H\x1B[2K");
                 println!("100.0% [==================================================] {:.1}/{:.1}s",
                          total_seconds,
@@ -230,6 +231,11 @@ mod tests{
     fn test_play() {
         let music = MusicHandler::new("富士山下".to_string(), true,true);
         music.run().unwrap();
+    }
+    #[test]
+    fn test_colored_print() {
+        println!("blue:{}-red:{}:on_bright_green:{}", "hello world".blue(), "hello world".red(), "hello world".on_bright_green());
+        println!("green bold:{},bright_red italic:{}", "hello world".green().bold(),"italic".bright_red().italic());
     }
 
 }

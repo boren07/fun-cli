@@ -1,4 +1,5 @@
 use clap::{Command, Parser, Subcommand};
+use colored::Colorize;
 use crate::error::CliError;
 use crate::impls::curl::CurlHandler;
 use crate::impls::music::MusicHandler;
@@ -33,11 +34,11 @@ impl Commands {
         match combine_handlers.matches_handler(self) {
             Ok(handler) => {
                 if let Err(cli_err) = handler.run() {
-                    eprintln!("error:{}", cli_err);
+                    eprintln!("{}: {}", "error".red().bold(),cli_err.to_string().italic());
                 }
             }
             Err(cli_err) => {
-                eprintln!("error:{}", cli_err)
+                eprintln!("{}: {}", "error".red().bold(),cli_err.to_string().italic());
             }
         }
     }

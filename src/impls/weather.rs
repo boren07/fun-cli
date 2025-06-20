@@ -3,13 +3,14 @@ use clap::Parser;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Deserializer};
 use serde::de::IntoDeserializer;
+use url::form_urlencoded;
 use crate::cli::Commands;
 use crate::error::CliError;
 use crate::impls::handlers::CommandHandler;
 
 #[derive(Debug,Parser)]
 pub struct WeatherHandler {
-    #[arg(short, long, help = "输入你想查询的城市名称")]
+    #[arg(required = true,help = "输入你想查询的城市名称")]
     city: String,
 
     #[arg(short, long, default_value_t = 1, help = "输入查询范围，默认当天")]
@@ -104,7 +105,8 @@ impl<'a> HeFengWeather<'a> {
     }
     /// 获取实时天气信息
     pub fn get_now_weather(&self, city: &str) -> Result<WeatherResult, Box<dyn std::error::Error>> {
-        let geo_api = Self::HEFENG_GEO_API_URL.replace("{city}", city).replace("{apiKey}", Self::HEFENG_API_KEY);
+        let encoded_city = form_urlencoded::byte_serialize(city.as_bytes()).collect::<String>();
+        let geo_api = Self::HEFENG_GEO_API_URL.replace("{city}", &encoded_city).replace("{apiKey}", Self::HEFENG_API_KEY);
         let resp = self.client.get(geo_api).send()?.error_for_status()?;
         // eprintln!("{:?}", resp.text().unwrap());
         let res: serde_json::Value = resp.json()?;

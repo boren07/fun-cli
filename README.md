@@ -5,10 +5,9 @@
 > *"Life is too short for boring CLI tools."*  
 
 **`fun-cli` 是一个不断生长的命令行娱乐工具集**，专为那些觉得上班无聊的人打造。在这里，你可以：  
-- ☔ 查天气时顺便被吐槽（*“今天下雨，适合宅家写 Bug”*）  
-- 🎵 用 ASCII 频谱播放音乐（*假装自己在黑客帝国*）  
+- ☔ 查天气时顺便被吐槽
+- 🎵 用 ASCII 频谱播放音乐
 - 🕹️ 玩俄罗斯方块（*老板键已隐藏，按 `Ctrl + C` 退出*）  
-- 🤖 让 AI 讲冷笑话（*“为什么程序员分不清万圣节和圣诞节？因为 Oct 31 == Dec 25！”*）  
 - ...**或者贡献你的奇思妙想！**  
 
 [![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
