@@ -30,7 +30,7 @@ cd fun-cli
 cargo build --release
 cargo install --path .  # 安装到全局
 
-# 运行单元测试（我们管这叫「快乐验证」）
+# 运行单元测试
 cargo test -- --nocapture  # 禁止输出被吞
 
 # 恭喜你！可以开始愉快的玩耍了
