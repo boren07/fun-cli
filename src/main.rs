@@ -5,7 +5,6 @@ mod utils;
 
 use crate::cli::FunCli;
 use clap::Parser;
-use colored::Colorize;
 
 fn main() {
     let cli = FunCli::parse();

@@ -1,13 +1,15 @@
 use clap::{Command, Parser, Subcommand};
-use colored::Colorize;
+use crossterm::style::Stylize;
 use crate::error::CliError;
 use crate::impls::curl::CurlHandler;
+use crate::impls::games::games::GamesHandler;
 use crate::impls::music::MusicHandler;
 use crate::impls::handlers::{CombineHandler, CommandHandler};
 use crate::impls::weather::WeatherHandler;
+use crate::utils::consts::BANNER;
 
 #[derive(Debug, Parser)]
-#[command(name = "fun", author, version, about, long_about)]
+#[command(name = "fun", author, version, about, long_about = BANNER )]
 pub struct FunCli {
 
     #[command(subcommand)]
@@ -25,6 +27,10 @@ pub enum Commands {
 
     #[command(name = "curl", version, about = "curl系统")]
     Curl(CurlHandler),
+
+    #[command(name = "game", version, about = "游戏系统")]
+    Game(GamesHandler),
+
 }
 
 impl Commands {

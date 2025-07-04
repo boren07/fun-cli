@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::fmt::Formatter;
 
 #[derive(Debug)]
 pub enum CliError {
@@ -10,13 +11,13 @@ pub enum CliError {
 }
 
 impl std::fmt::Display for CliError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             CliError::NoMatchHandlerError => write!(f, "not handler matches the command!"),
             CliError::HandlerParamMissError => write!(f, "parser param miss error!"),
             CliError::FileSysError(err) => write!(f,"file sys error:{}", err),
             CliError::NetRequestError(err) => write!(f,"net request error:{}", err),
-            CliError::UnknownError(err) => write!(f,"unknown error! detail reason is :{}", err),
+            CliError::UnknownError(err) => write!(f,"unknown error! {}", err),
         }
     }
 }

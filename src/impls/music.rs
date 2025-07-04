@@ -7,28 +7,31 @@ use rodio::{Decoder, OutputStream, Sink, Source};
 use rustfft::num_complex::{Complex, ComplexFloat};
 use rustfft::FftPlanner;
 use serde::Deserialize;
-use std::io::{BufReader, Cursor, Read, Seek};
+use std::io::{stdout, BufReader, Cursor, Read, Seek, Write};
 use std::ops::Deref;
 use std::time::{Duration, Instant};
-use colored::Colorize;
+use crossterm::cursor::MoveTo;
+use crossterm::{execute, queue};
+use crossterm::style::{Print, Stylize};
+use crossterm::terminal::{Clear, ClearType};
 use url::form_urlencoded;
-use crate::utils::chars;
+use crate::utils::consts;
 
-#[derive(Debug,Parser)]
+#[derive(Debug, Parser)]
 pub struct MusicHandler {
     #[arg(required = true, help = "输入你想查询的音乐名称")]
     name: String,
 
-    #[arg(short,long, default_value_t = true, help = "是否需要播放音乐")]
+    #[arg(short, long, default_value_t = true, help = "是否需要播放音乐")]
     play: bool,
     //使用action为标记参数，出现则为true
-    #[arg(short,long, default_value_t = false, help = "是否循环播放音乐",action=clap::ArgAction::SetTrue)]
+    #[arg(short,long, default_value_t = false, help = "是否循环播放音乐",action=clap::ArgAction::SetTrue
+    )]
     loop_play: bool,
 }
 
-#[derive(Debug,Default,Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 struct NetCloudMusic {
-
     #[serde(default)]
     title: String,
     #[serde(default)]
@@ -41,14 +44,11 @@ struct NetCloudMusic {
     #[serde(default)]
     link: String,
 }
-const BARS: [char; 8] = [' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇'];
+const MUSIC_API: &'static str = "https://api.bakaomg.cn/v1/music/netease/search?keyword={keyword}";
 
 impl MusicHandler {
 
-    const MUSIC_API: &'static str = "https://api.bakaomg.cn/v1/music/netease/search?keyword={keyword}";
-
-
-    pub fn new(name: String,  play: bool, loop_play: bool)->  Self {
+    pub fn new(name: String, play: bool, loop_play: bool) -> Self {
         Self {
             name,
             play,
@@ -56,18 +56,17 @@ impl MusicHandler {
         }
     }
 
-    pub fn get_internet_music(&self,client: &Client) -> Result<NetCloudMusic, Box<dyn std::error::Error>>
+    pub fn get_internet_music(&self, client: &Client) -> Result<NetCloudMusic, Box<dyn std::error::Error>>
     {
         let name = form_urlencoded::byte_serialize((&self.name).as_bytes()).collect::<String>();
-        let response = client.get(Self::MUSIC_API.replace("{keyword}",&name)).send()?.error_for_status()?;
+        let response = client.get(MUSIC_API.replace("{keyword}", &name)).send()?.error_for_status()?;
         let res: serde_json::Value = response.json()?;
         if let Some(data) = res["data"].as_object() {
             if let Some(list) = data["list"].as_array() {
                 if let Some(item) = list.first() {
-                    let music: NetCloudMusic  = serde_json::from_value(item.clone())?;
-                    return Ok(music)
+                    let music: NetCloudMusic = serde_json::from_value(item.clone())?;
+                    return Ok(music);
                 }
-
             }
         }
         Err("获取音乐信息失败！".into())
@@ -78,7 +77,7 @@ impl MusicHandler {
         response.copy_to(&mut audio_data)?;
         Ok(audio_data)
     }
-    fn create_decoder(data: &Vec<u8>)-> Result<Decoder<BufReader<Cursor<Vec<u8>>>>, Box<dyn std::error::Error>> {
+    fn create_decoder(data: &Vec<u8>) -> Result<Decoder<BufReader<Cursor<Vec<u8>>>>, Box<dyn std::error::Error>> {
         // 使用Cursor将Vec<u8>转换为可读流
         let cursor = Cursor::new(data.clone());
         let decoder = Decoder::new(BufReader::new(cursor))?;
@@ -98,7 +97,7 @@ impl MusicHandler {
         }
         fft.process(&mut buffer);
 
-        buffer[..window_size/2]
+        buffer[..window_size / 2]
             .iter()
             .map(|c| 10.0 * c.norm().log10().max(0.0))
             .collect()
@@ -117,11 +116,10 @@ impl MusicHandler {
             height_chars[height]
         }).collect()
     }
-
 }
 
 impl CommandHandler for MusicHandler {
-    fn run(&self) -> Result<(),CliError> {
+    fn run(&self) -> Result<(), CliError> {
         let client = Client::new();
         let music = self.get_internet_music(&client)?;
         println!("🎶 加载音频地址: {}", &music.link);
@@ -130,7 +128,7 @@ impl CommandHandler for MusicHandler {
         let total_seconds = decoder.total_duration().ok_or_else(|| CliError::UnknownError("无法获取音频时长!!!".to_owned()))?.as_secs();
         let sample_rate = decoder.sample_rate() as usize;
 
-        println!("✅ 音频加载完成 (时长: {}分{}秒, 采样率: {}Hz)", total_seconds /60, total_seconds %60, sample_rate);
+        println!("✅ 音频加载完成 (时长: {}分{}秒, 采样率: {}Hz)", total_seconds / 60, total_seconds % 60, sample_rate);
         //转换成f32
         let source_for_process = decoder.convert_samples::<f32>();
         let samples: Vec<f32> = source_for_process.collect();
@@ -147,23 +145,23 @@ impl CommandHandler for MusicHandler {
         };
 
         println!("🎶 播放中 (按 Ctrl+C 停止)\n");
-        print!("{}", chars::CLEAR); // 清屏并重置光标
+        let mut stdout = stdout();
+        // print!("{}", chars::CLEAR);
+        execute!(stdout, Clear(ClearType::All))?; // 清屏并重置光标
 
         // 4. 初始化FFT
         let mut planner = FftPlanner::<f32>::new();
         let window_size = 1024;
         let fft = planner.plan_fft_forward(window_size);
 
-        // 置顶布局
-        print!("\x1B[1;1H");
-        println!("🎹  实时频谱:{}({}):-{}", &music.title,&music.album,&music.artist);
-        print!("\x1B[3;1H");
+        execute!(stdout, MoveTo(0, 0))?; // 移动光标到第一行第一列
+        println!("🎹  实时频谱:{}({}):-{}", &music.title, &music.album, &music.artist);
+        execute!(stdout, MoveTo(0, 2))?; //移动到第三行第一列
         println!("播放进度:");
 
         // 5. 主循环
         let mut start_time = Instant::now();
         let mut is_playing = true;
-
         while is_playing {
             let elapsed = start_time.elapsed().as_secs_f32();
             let progress = (elapsed / total_seconds as f32).min(1.0);
@@ -176,29 +174,36 @@ impl CommandHandler for MusicHandler {
             let spectrum = Self::compute_real_spectrum(chunk, &*fft, window_size);
             let ascii_bars = Self::render_ascii(&spectrum, 50);
 
-            // 更新显示
-            print!("\x1B[2;1H\x1B[2K");
-            print!("{}",ascii_bars.bright_green().bold());
-            print!("\x1B[4;1H\x1B[2K");
-            println!("{:.1}% [{}{}] {:.1}/{:.1}s",
+            // queue用于多个操作排队执行 移动到第2行第1列并清除整行
+            queue!(stdout, MoveTo(0, 1),Clear(ClearType::CurrentLine))?;
+            queue!(stdout, Print(ascii_bars.dark_green().bold()))?;
+            queue!(stdout, MoveTo(0, 3),Clear(ClearType::CurrentLine))?;
+            queue!(stdout, Print(format!("{:.1}% [{}{}] {:.1}/{:.1}s",
                      progress * 100.0,
                      "=".repeat((progress * 50.0) as usize),
                      " ".repeat(50 - (progress * 50.0) as usize),
                      elapsed,
-                     total_seconds
-            );
+                     total_seconds)))?;
+            // println!("{:.1}% [{}{}] {:.1}/{:.1}s",
+            //          progress * 100.0,
+            //          "=".repeat((progress * 50.0) as usize),
+            //          " ".repeat(50 - (progress * 50.0) as usize),
+            //          elapsed,
+            //          total_seconds
+            // );
+            stdout.flush()?;     // 手动刷新缓冲区使操作生效
             std::thread::sleep(Duration::from_millis(50));
 
             // 检查是否结束
             if progress >= 1.0 || sink.as_ref().map_or_else(|| false, |sink| sink.empty()) {
                 is_playing = false;
-                print!("\x1B[2;1H\x1B[2K");
-                println!("{}", "██████████████████████████████████████████████████".bright_green().bold());
-                print!("\x1B[4;1H\x1B[2K");
-                println!("100.0% [==================================================] {:.1}/{:.1}s",
-                         total_seconds,
-                         total_seconds
-                );
+                queue!(stdout, MoveTo(0, 1),Clear(ClearType::CurrentLine))?;
+                queue!(stdout, Print("██████████████████████████████████████████████████".dark_green().bold()))?;
+                queue!(stdout, MoveTo(0, 3),Clear(ClearType::CurrentLine))?;
+                queue!(stdout,Print(format!("100.0% [==================================================] {:.1}/{:.1}s",
+                            total_seconds,
+                            total_seconds)))?;
+                stdout.flush()?;
                 if self.loop_play {
                     // 重置播放器
                     if let Some(sink) = &sink {
@@ -212,7 +217,6 @@ impl CommandHandler for MusicHandler {
                     is_playing = false;
                 }
             }
-
         }
         println!("\n🎉 {}！", if !self.play { "分析完成" } else { "播放完成" });
         // 确保播放完全停止
@@ -221,22 +225,21 @@ impl CommandHandler for MusicHandler {
         }
         Ok(())
     }
-
 }
 // 仅测试编译该模块
 #[cfg(test)]
-mod tests{
+mod tests {
+    use crossterm::style::Stylize;
     use super::*;
     #[test]
     fn test_play() {
-        let music = MusicHandler::new("富士山下".to_string(), true,true);
+        let music = MusicHandler::new("富士山下".to_string(), true, true);
         music.run().unwrap();
     }
     #[test]
     fn test_colored_print() {
-        println!("blue:{}-red:{}:on_bright_green:{}", "hello world".blue(), "hello world".red(), "hello world".on_bright_green());
-        println!("green bold:{},bright_red italic:{}", "hello world".green().bold(),"italic".bright_red().italic());
+        println!("blue:{}-red:{}:on_green:{}", "hello world".blue(), "hello world".red(), "hello world".on_green());
+        println!("green bold:{},on_green italic:{}", "hello world".green().bold(), "italic".on_green().italic());
     }
-
 }
 

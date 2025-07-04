@@ -1,8 +1,5 @@
-use std::error::Error;
 use crate::cli::Commands;
 use crate::error::CliError;
-use crate::impls::music::MusicHandler;
-use crate::impls::weather::WeatherHandler;
 ///
 /// 命令行输入的处理器
 /// [`SubCommand`](clap::Subcommand) 应该实现此trait
@@ -32,6 +29,9 @@ impl CombineHandler {
                 Ok(Box::new(handler))
             }
             Commands::Curl(handler) => {
+                Ok(Box::new(handler))
+            }
+            Commands::Game(handler) => {
                 Ok(Box::new(handler))
             }
             _ => {
