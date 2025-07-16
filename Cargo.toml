@@ -23,6 +23,8 @@ reqwest = { version = "0.12.7" ,features = ["blocking",  "json", "gzip","multipa
 # 终端控制与调色
 crossterm = { version = "0.28.1" }
 rand = "0.8.5"
+# unicode字符宽度处理
+unicode-width = "0.2.0"
 [[bin]]
 name = "fun"
 path = "src/main.rs"

@@ -7,7 +7,7 @@
 **`fun-cli` 是一个不断生长的命令行娱乐工具集**，专为那些觉得上班无聊的人打造。在这里，你可以：  
 - ☔ 查天气时顺便被吐槽
 - 🎵 用 ASCII 频谱播放音乐
-- 🕹️ 玩俄罗斯方块（*老板键已隐藏，按 `Ctrl + C` 退出*）  
+- 🕹️ 玩雷霆战机（*沉浸式玩耍，按 `Q` 退出*）  
 - ...**或者贡献你的奇思妙想！**  
 
 [![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)

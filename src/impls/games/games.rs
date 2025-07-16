@@ -15,7 +15,7 @@ pub struct GamesHandler {
     #[arg(short, long, default_value_t = 80, help = "游戏宽度")]
     width: u16,
 
-    #[arg(long, default_value_t = 24, help = "游戏高度")]
+    #[arg(long, default_value_t = 30, help = "游戏高度")]
     height: u16,
 
     #[arg(short, long, default_value_t = 1, help = "游戏难度1-3")]
