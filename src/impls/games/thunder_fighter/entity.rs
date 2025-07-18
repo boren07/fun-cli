@@ -30,10 +30,9 @@ pub struct Enemy {
 impl Player {
     pub fn render(&mut self, stdout: &mut Stdout, max_bound: u16) -> Result<(), CliError> {
         for bullet in self.bullets.iter_mut() {
-            bullet.render(stdout,max_bound,Color::DarkYellow)?;
+            bullet.render(stdout,max_bound,Color::DarkYellow,None)?;
         }
-        //清除屏幕外的子弹
-        self.bullets.retain(|bullet| !bullet.is_out_of_bound(max_bound));
+        self.bullets.retain(|bullet| !bullet.is_out_of_bound(max_bound) );
         // 清除玩家上一次位置
         queue!(
             stdout,
@@ -44,6 +43,7 @@ impl Player {
         queue!(stdout,cursor::MoveTo(self.position().x,self.position().y), Print(self.display().yellow()))?;
         Ok(())
     }
+
     pub fn attack_bullet(&mut self){
         let coordinate = self.position();
         let mut y = coordinate.y;
@@ -123,12 +123,11 @@ impl Enemy {
         }
         self.move_to(self.entity.x, y);
     }
-    pub fn render(&mut self, stdout: &mut Stdout, max_bound: u16) -> Result<(), CliError> {
+    pub fn render(&mut self, stdout: &mut Stdout, max_bound: u16, enemy_entity: &dyn GameEntity) -> Result<(), CliError> {
         for bullet in self.bullets.iter_mut() {
-            bullet.render(stdout,max_bound,Color::DarkMagenta)?;
+            bullet.render(stdout,max_bound,Color::DarkMagenta,Some(enemy_entity))?;
         }
-        //清除屏幕外的子弹
-        self.bullets.retain(|bullet| !bullet.is_out_of_bound(max_bound));
+        self.bullets.retain(|bullet| !bullet.is_out_of_bound(max_bound) && !bullet.coll_detect(enemy_entity));
         // 清除敌人上一次位置
         queue!(
             stdout,
@@ -141,6 +140,8 @@ impl Enemy {
         }
         Ok(())
     }
+
+
     pub fn new_random_enemy(width: u16, height: u16) -> Enemy {
         let mut rng = rand::thread_rng();
         let x = rng.gen_range(0..width/2);
@@ -229,23 +230,25 @@ impl GameEntity for Enemy {
     }
 }
 impl Bullet {
-    pub fn render(&mut self, stdout: &mut Stdout, max_bound: u16, color: Color) -> Result<(), CliError> {
+    pub fn render(&mut self, stdout: &mut Stdout, max_bound: u16, color: Color,enemy_entity:Option<&dyn GameEntity>) -> Result<(), CliError> {
         // 清除子弹上一次位置
         queue!(
             stdout,
             cursor::MoveTo(self.last_position().x,self.last_position().y),
             Print(" ".repeat(self.width() as usize))
         )?;
-        if self.is_out_of_bound(max_bound) {
+        if self.is_out_of_bound(max_bound)  || (enemy_entity.is_some() && self.coll_detect(enemy_entity.unwrap())) {
             return Ok(());
         }
         // 绘制子弹
         queue!(stdout,cursor::MoveTo(self.position().x,self.position().y), Print(self.display().with(color)))?;
         Ok(())
     }
+    /// 判断子弹是否超出屏幕边界
     pub fn is_out_of_bound(&self, max_bound: u16) -> bool {
         self.last_position().y == 0 || self.last_position().y >= max_bound
     }
+
 }
 impl GameEntity for Bullet {
     fn position(&self) -> Coordinate {

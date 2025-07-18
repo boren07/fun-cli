@@ -54,7 +54,7 @@ impl CommandHandler for GamesHandler {
             return Ok(());
         }
         let select = self.select.unwrap();
-        if select > game_list.len() as u8 && select < 1 {
+        if select > game_list.len() as u8 || select < 1 {
             return Err(CliError::UnknownError(format!("游戏序号{}不存在", select)));
         }
         let game = game_list.get(select as usize - 1).unwrap();
