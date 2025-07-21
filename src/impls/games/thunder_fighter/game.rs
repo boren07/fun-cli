@@ -239,7 +239,7 @@ impl Game for ThunderFighterGame {
         )));
         // 进入全屏 EnterAlternateScreen
         let mut stdout = stdout();
-        execute!(stdout, cursor::Hide)?;
+        execute!(stdout,cursor::Hide)?;
         // terminal::enable_raw_mode()?;
         execute!(stdout, Clear(ClearType::All), cursor::MoveTo(0, 0))?;
         let g1 = game.clone();
@@ -284,7 +284,10 @@ impl Game for ThunderFighterGame {
             }
             game_state.update_player();
             // 绘制
-            game_state.render_player()?;
+            if let Err(e) = game_state.render_player() {
+                error = Some(e);
+                break;
+            }
             drop(game_state);
             // 控制刷新帧率
             sleep(Duration::from_millis(20));
