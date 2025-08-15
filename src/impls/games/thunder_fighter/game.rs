@@ -1,6 +1,6 @@
 use crate::error::CliError;
 use crate::impls::games::entities::{Entity, GameEntity};
-use crate::impls::games::games::Game;
+use crate::impls::game::Game;
 use crate::impls::games::thunder_fighter::entity::{Enemy, Player};
 use crate::utils::consts;
 use crossterm::event::{KeyCode, KeyEventKind};
@@ -17,6 +17,7 @@ use std::thread::sleep;
 use std::time::Duration;
 use std::{result, thread};
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
+use crate::ui::event::poll_input;
 
 pub struct ThunderFighterGame;
 struct ThunderFighterGameState {
@@ -209,19 +210,7 @@ impl ThunderFighterGameState {
     }
 }
 
-/// 游戏输入轮询
-fn poll_input() -> Result<Option<KeyCode>, CliError> {
-    // 非阻塞输入轮询
-    if event::poll(Duration::from_millis(100))? {
-        if let event::Event::Key(key_event) = event::read()? {
-            // 只处理按下事件
-            if key_event.kind == KeyEventKind::Press {
-                return Ok(Some(key_event.code));
-            }
-        }
-    }
-    Ok(None)
-}
+
 
 impl Game for ThunderFighterGame {
     fn name(&self) -> &'static str {
@@ -260,7 +249,7 @@ impl Game for ThunderFighterGame {
                 });
             
                 if result.is_err() {
-                    tx.send("game update error!".to_owned()).unwrap();
+                    tx.send("games update error!".to_owned()).unwrap();
                 }
                 
                 //控制刷新帧率

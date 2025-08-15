@@ -2,6 +2,7 @@ mod cli;
 mod impls;
 mod error;
 mod utils;
+mod ui;
 
 use crate::cli::FunCli;
 use clap::Parser;

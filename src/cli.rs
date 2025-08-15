@@ -1,12 +1,12 @@
-use clap::{Command, Parser, Subcommand};
-use crossterm::style::Stylize;
-use crate::error::CliError;
 use crate::impls::curl::CurlHandler;
-use crate::impls::games::games::GamesHandler;
-use crate::impls::music::MusicHandler;
 use crate::impls::handlers::{CombineHandler, CommandHandler};
+use crate::impls::music::MusicHandler;
 use crate::impls::weather::WeatherHandler;
 use crate::utils::consts::BANNER;
+use clap::{Parser, Subcommand};
+use crossterm::style::Stylize;
+use crate::impls::game::GameHandler;
+use crate::impls::os::OsHandler;
 
 #[derive(Debug, Parser)]
 #[command(name = "fun", author, version, about, long_about = BANNER )]
@@ -29,7 +29,10 @@ pub enum Commands {
     Curl(CurlHandler),
 
     #[command(name = "game", version, about = "游戏系统")]
-    Game(GamesHandler),
+    Game(GameHandler),
+
+    #[command(name = "os", version, about = "操作系统")]
+    Os(OsHandler),
 
 }
 

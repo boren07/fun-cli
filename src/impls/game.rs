@@ -8,7 +8,7 @@ use crate::impls::games::thunder_fighter::game::ThunderFighterGame;
 use crate::impls::handlers::CommandHandler;
 
 #[derive(Debug, Parser)]
-pub struct GamesHandler {
+pub struct GameHandler {
     #[arg(short, long, help = "请选择游戏1-6")]
     select: Option<u8>,
 
@@ -44,7 +44,7 @@ fn get_game_list() -> &'static Vec<Box<dyn Game>> {
     GAME_REGISTRY.get_or_init(init_game_list)
 }
 
-impl CommandHandler for GamesHandler {
+impl CommandHandler for GameHandler {
     fn run(&self) -> Result<(), CliError> {
         let game_list = get_game_list();
         if self.select.is_none() {

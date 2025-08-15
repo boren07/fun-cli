@@ -34,6 +34,9 @@ impl CombineHandler {
             Commands::Game(handler) => {
                 Ok(Box::new(handler))
             }
+            Commands::Os(handler) => {
+                Ok(Box::new(handler))
+            }
             _ => {
                 Err(CliError::NoMatchHandlerError)
             }

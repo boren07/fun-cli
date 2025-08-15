@@ -25,6 +25,10 @@ crossterm = { version = "0.28.1" }
 rand = "0.8.5"
 # unicode字符宽度处理
 unicode-width = "0.2.0"
+
+#获取系统信息
+sysinfo = "0.31"
+
 [[bin]]
 name = "fun"
 path = "src/main.rs"

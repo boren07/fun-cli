@@ -1,6 +1,4 @@
-use std::io::Stdout;
-use crossterm::queue;
-use crate::error::CliError;
+use crate::ui::Coordinate;
 
 pub struct Entity {
     pub x: u16,
@@ -11,10 +9,6 @@ pub struct Entity {
     pub last_y: u16,
 }
 
-pub struct Coordinate{
-    pub x: u16,
-    pub y: u16,
-}
 pub trait GameEntity{
     fn position(&self) -> Coordinate;
 

@@ -14,3 +14,9 @@ pub const GAME_OVER: &'static str = r#"
 / /_/ / ___ |/ /  / / /___   / /_/ /| |/ / /___/ _, _/ 
 \____/_/  |_/_/  /_/_____/   \____/ |___/_____/_/ |_|                                                     
 "#;
+
+pub const UNKNOWN: &'static str= "unknown";
+
+pub const SIZE_KB: u64  = 1024;
+pub const SIZE_MB: u64  = 1024 * 1024;
+pub const SIZE_GB: u64  = SIZE_MB * 1024;

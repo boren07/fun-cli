@@ -1,6 +1,6 @@
 use std::cmp::max;
 use crate::error::CliError;
-use crate::impls::games::entities::{Coordinate, Entity, GameEntity};
+use crate::impls::games::entities::{Entity, GameEntity};
 use crate::impls::games::thunder_fighter::game::{ENEMY_BULLET, ENEMY_DISPLAY, PLAYER_BULLET};
 use crossterm::style::{Color, Print, Stylize};
 use crossterm::{cursor, queue};
@@ -8,6 +8,7 @@ use std::io::{stdout, Stdout};
 use crossterm::cursor::position;
 use rand::Rng;
 use unicode_width::UnicodeWidthStr;
+use crate::ui::Coordinate;
 
 //玩家
 pub struct Player {
