@@ -89,6 +89,10 @@ impl<T: Widget> Panel<T> {
         queue!(stdout,MoveTo(coordinate.x+self.width()-1, coordinate.y+self.height()-1),Print("┘"))?;
         Ok(())
     }
+    /// 更新子组件
+    pub fn update_widget(&mut self, new_widget:T) {
+        self.child = new_widget;
+    }
 }
 
 // 实现Widget接口

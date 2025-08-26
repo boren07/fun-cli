@@ -49,9 +49,9 @@ impl Widget for CpuWidget {
     fn render(&self, stdout: &mut Stdout) -> std::io::Result<()> {
         let (x,y) = (self.coordinate().x+2, self.coordinate().y+2);
         queue!(stdout, SetForegroundColor(self.theme.primary_text_color()))?;
-        queue!(stdout, MoveTo(x,y),   Print(format!("CPU使用率:     {:.2}%", self.cpu_usage)))?;
-        queue!(stdout, MoveTo(x,y+1), Print(format!("Core核心数:    {}", self.core_count)))?;
-        queue!(stdout, MoveTo(x,y+2), Print(format!("Core物理核心数: {}", self.core_count)))?;
+        queue!(stdout, MoveTo(x,y),   Print(format!("CPU使用率:     {:>5.2}%", self.cpu_usage)))?;
+        queue!(stdout, MoveTo(x,y+1), Print(format!("Core核心数:    {:>6}", self.core_count)))?;
+        queue!(stdout, MoveTo(x,y+2), Print(format!("Core物理核心数: {:>5}", self.core_count)))?;
         Ok(())
     }
 }

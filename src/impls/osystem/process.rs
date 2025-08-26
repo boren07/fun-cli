@@ -25,7 +25,11 @@ struct ProcessInfo {
 }
 impl Display for ProcessInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}\t{}\t{}%\t{}MB", self.name, self.pid, self.cpu, self.mem)
+        //<25 左对齐 ，不足25个字符，用空格填充
+        // <: 左对齐（默认用于字符串）
+        // >: 右对齐（默认用于数字）
+        // ^: 居中对齐
+        write!(f, "{:<25}{:<10}{:>8.2}%{:>10}MB", self.name, self.pid, self.cpu, self.mem)
     }
 }
 
@@ -37,13 +41,18 @@ impl ProcessWidget {
             height: (right_bottom.y - left_top.y) + 1,
             coordinate: left_top,
             theme,
-            process_list: sys.processes().iter().map(|(pid, process)| ProcessInfo {
-                name: process.name().to_str().unwrap().to_string(),
-                pid: pid.as_u32(),
-                cpu: process.cpu_usage(),
-                mem: process.memory() / consts::SIZE_MB,
-            })
-            .collect(),
+            process_list: {
+                let mut process_list = sys.processes().iter().map(|(pid, process)| ProcessInfo {
+                    name: process.name().to_str().unwrap().to_string(),
+                    pid: pid.as_u32(),
+                    cpu: process.cpu_usage()/ sys.physical_core_count().unwrap() as f32,
+                    mem: process.memory() / consts::SIZE_MB,
+                }).collect::<Vec<ProcessInfo>>();
+                // 按照 CPU 使用率降序排序
+                process_list.sort_by(|a, b| b.cpu.partial_cmp(&a.cpu).unwrap());
+                process_list
+            },
+
         }
     }
 }

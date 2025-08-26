@@ -6,7 +6,7 @@ use std::io::{stdout, Write};
 use std::ops::Deref;
 use std::rc::Rc;
 use std::thread::sleep;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use clap::{Parser, ValueEnum};
 use crossterm::cursor::{Hide, MoveTo, Show};
 use crossterm::event::KeyCode;
@@ -60,6 +60,8 @@ struct LayoutPanel {
     widgets: Vec<Rc<RefCell<dyn Widget>>>,
     focus_idx: usize,
     focus_mode: bool,
+    layout: HashMap<LayoutPosition, (Coordinate, Coordinate)>,
+    theme: Theme,
 }
 impl LayoutPanel {
     fn calculate_layout(width: u16, height: u16) -> HashMap<LayoutPosition, (Coordinate, Coordinate)>  {
@@ -97,7 +99,9 @@ impl LayoutPanel {
             memory_panel: Rc::new(RefCell::new(memory_panel)),
             process_panel: Rc::new(RefCell::new(process_panel)),
             widgets: vec![],
-            focus_idx: 1,
+            layout,
+            theme,
+            focus_idx: 0,
             focus_mode: false,
         };
         layout_panel.widgets.push(layout_panel.overview_panel.clone());
@@ -107,6 +111,43 @@ impl LayoutPanel {
         layout_panel.widgets.push(layout_panel.process_panel.clone());
         layout_panel
     }
+
+    // 添加更新系统信息的方法
+    fn update_system_info(&mut self, sys: &mut System) {
+        let top = self.layout.get(&LayoutPosition::Top).unwrap();
+        let left_top = self.layout.get(&LayoutPosition::LeftTop).unwrap();
+        let right_top = self.layout.get(&LayoutPosition::RightTop).unwrap();
+        let left_bottom = self.layout.get(&LayoutPosition::LeftBottom).unwrap();
+        let right_bottom = self.layout.get(&LayoutPosition::RightBottom).unwrap();
+        // 更新概览面板
+        {
+            let mut panel = self.overview_panel.borrow_mut();
+            let mut list_widget = List::new(top.0.clone(), top.1.clone(), self.theme.clone());
+            Self::set_overview_panel_list(&mut list_widget, sys);
+            panel.update_widget(list_widget);
+        }
+        // 更新CPU面板
+        {
+            let mut panel = self.cpu_panel.borrow_mut();
+            let new_widget = CpuWidget::new(left_top.0.clone(), left_top.1.clone(), self.theme.clone(), sys);
+            panel.update_widget(new_widget);
+        }
+        // 更新内存面板
+        {
+            let mut panel = self.memory_panel.borrow_mut();
+            let new_widget = MemoryWidget::new(left_bottom.0.clone(), left_bottom.1.clone(), self.theme.clone(), sys);
+            panel.update_widget(new_widget);
+        }
+        // 更新进程面板
+        {
+            let mut panel = self.process_panel.borrow_mut();
+            let new_widget = ProcessWidget::new(right_bottom.0.clone(), right_bottom.1.clone(), self.theme.clone(), sys);
+            panel.update_widget(new_widget);
+        }
+
+        // 磁盘面板不需要系统信息，可以保持不变
+    }
+
     fn render(&mut self, stdout: &mut io::Stdout) -> Result<(), CliError> {
         for (index,panel) in self.widgets.iter_mut().enumerate() {
             let mut panel_mut = panel.borrow_mut();
@@ -114,7 +155,7 @@ impl LayoutPanel {
                 panel_mut.set_focus(true);
             }
             panel_mut.render(stdout)?;
-            stdout.flush()?;
+            // stdout.flush()?;
         }
         Ok(())
     }
@@ -144,7 +185,6 @@ impl LayoutPanel {
         match key_code {
             KeyCode::Char('s') | KeyCode::Down | KeyCode::Tab => {
                 if !self.focus_mode {
-                    queue!(&mut stdout(),MoveTo(0,34),Print(format!("尺寸：{} x {}" ,1,1)) ).unwrap();
                     self.next_focus();
                 }else {
                     self.widgets[self.focus_idx].borrow_mut().handle_event(key_code);
@@ -182,8 +222,9 @@ impl CommandHandler for OsHandler {
         };
         width = (width/2)*2;
         height = (height/3)*3;
+        let mut layout_panel = LayoutPanel::new(width, height,&mut sys , self.theme.clone());
+        let mut last_refresh = 1;
         loop {
-            let mut layout_panel = LayoutPanel::new(width, height , &mut sys, self.theme.clone());
             layout_panel.render(&mut stdout)?;
             stdout.flush()?;
             //接收输入
@@ -191,14 +232,18 @@ impl CommandHandler for OsHandler {
                 match code {
                     KeyCode::Char('q') => break,
                     _ => {
-                        println!("输入事件：{}",code);
                         layout_panel.handle_event(code);
+                        last_refresh =1;
                     }
                 }
-            }else{
-                sleep(Duration::from_secs(3));
-                sys.refresh_all();
+            } else {
+                sleep(Duration::from_millis(100));
+                if last_refresh%20 == 0 {
+                    sys.refresh_all();
+                    layout_panel.update_system_info(&mut sys);
+                }
             }
+            last_refresh+=1;
             execute!(stdout,Clear(ClearType::All))?;
         }
         disable_raw_mode()?;

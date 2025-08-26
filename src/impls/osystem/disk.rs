@@ -1,16 +1,13 @@
-use std::fmt::Debug;
-use std::io::Stdout;
-use crossterm::cursor::MoveTo;
-use crossterm::event::Event;
-use crossterm::queue;
-use crossterm::style::{Print, SetForegroundColor, Stylize};
-use serde_json::to_string;
-use sysinfo::{Disk, Disks, System};
-use crate::impls::osystem::memory::MemoryWidget;
-use crate::ui::Coordinate;
 use crate::ui::theme::Theme;
 use crate::ui::widget::Widget;
+use crate::ui::Coordinate;
 use crate::utils::consts;
+use crossterm::cursor::MoveTo;
+use crossterm::queue;
+use crossterm::style::{Print, SetForegroundColor};
+use std::fmt::Debug;
+use std::io::Stdout;
+use sysinfo::Disks;
 
 pub struct DiskWidget {
     coordinate: Coordinate,
@@ -69,11 +66,11 @@ impl Widget for DiskWidget {
         //     x = x + i as u16 * 20;
         // };
         let disk = self.disks.get(0).unwrap();
-        queue!(stdout, MoveTo(x,y),  Print(format!("磁盘名称:     {}", disk.name)))?;
-        queue!(stdout, MoveTo(x,y+1),Print(format!("文件系统类型:  {}", disk.file_system)))?;
-        queue!(stdout, MoveTo(x,y+2),Print(format!("磁盘类型:     {}", disk.kind)))?;
-        queue!(stdout, MoveTo(x,y+3),Print(format!("磁盘总空间:    {}GB", disk.total/consts::SIZE_GB)))?;
-        queue!(stdout, MoveTo(x,y+4),Print(format!("可用空间:     {}GB", disk.available/consts::SIZE_GB)))?;
+        queue!(stdout, MoveTo(x,y),  Print(format!("磁盘名称:     {:>12}", disk.name)))?;
+        queue!(stdout, MoveTo(x,y+1),Print(format!("文件系统类型:  {:>12}", disk.file_system)))?;
+        queue!(stdout, MoveTo(x,y+2),Print(format!("磁盘类型:     {:>12}", disk.kind)))?;
+        queue!(stdout, MoveTo(x,y+3),Print(format!("磁盘总空间:    {:>10}GB", disk.total/consts::SIZE_GB)))?;
+        queue!(stdout, MoveTo(x,y+4),Print(format!("可用空间:      {:>10}GB", disk.available/consts::SIZE_GB)))?;
         Ok(())
     }
 }
