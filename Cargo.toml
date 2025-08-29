@@ -1,9 +1,9 @@
 [package]
 name = "fun-cli"
-version = "0.1.1"
+version = "1.0.0"
 edition = "2024"
 description = "Life is too short for boring CLI tools."
-repository = "https://gitee.com/boren07/fun-cli.git"
+repository = "https://github.com/boren07/fun-cli"
 authors = ["boren1007@qq.com"]
 license = "Apache-2.0"
 

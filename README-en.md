@@ -2,7 +2,7 @@
 
 # 🎮 `fun-cli` —— **Your Terminal Playground**
 
-> *"Life is too long,there are too few interesting CLIs."*
+> *"Life is too short for boring CLI tools."*
 
 **`fun-cli` is a constantly growing command-line entertainment toolkit** designed for those who find work boring. Here, you can:
 - ☔ Get weather updates with some sarcasm 
