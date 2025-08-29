@@ -81,12 +81,16 @@ jobs:
           else
             7z a -tzip ${{ matrix.asset_name }}.zip ./release-artifacts/*
           fi
+          # 重命名单独的可执行文件，便于识别
+          mv release-artifacts/${{ matrix.artifact_name }} release-artifacts/${{ matrix.asset_name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
-          path: ${{ matrix.asset_name }}.${{ matrix.archive_format }}
+          path: |
+            release-artifacts/${{ matrix.asset_name }}  # 单独的可执行文件
+            ${{ matrix.asset_name }}.${{ matrix.archive_format }}  # 压缩包
 
   # 发布任务
   release:
@@ -132,8 +136,11 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-artifacts/*.tar.gz
-            release-artifacts/*.zip
+            release-artifacts/**/*.tar.gz
+            release-artifacts/**/*.zip
+            release-artifacts/**/fun-linux-x86_64
+            release-artifacts/**/fun-macos-x86_64
+            release-artifacts/**/fun-windows-x86_64.exe
 
       - name: Notify on success
         if: success()
