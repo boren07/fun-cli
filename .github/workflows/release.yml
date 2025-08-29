@@ -21,18 +21,21 @@ jobs:
             artifact_name: fun
             asset_name: fun-linux-x86_64
             archive_format: tar.gz
+            system_deps: libasound2-dev
           # macOS x86_64
           - os: macos-latest
             target: x86_64-apple-darwin
             artifact_name: fun
             asset_name: fun-macos-x86_64
             archive_format: tar.gz
+            system_deps: ""
           # Windows x86_64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact_name: fun.exe
             asset_name: fun-windows-x86_64
             archive_format: zip
+            system_deps: ""
 
     steps:
       - name: Checkout code
@@ -78,21 +81,12 @@ jobs:
           else
             7z a -tzip ${{ matrix.asset_name }}.zip ./release-artifacts/*
           fi
-          
-          # 生成校验和
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            certutil -hashfile ${{ matrix.asset_name }}.${{ matrix.archive_format }} SHA256 | findstr /r /c:"^[A-F0-9]*$" > ${{ matrix.asset_name }}.sha256
-          else
-            shasum -a 256 ${{ matrix.asset_name }}.${{ matrix.archive_format }} > ${{ matrix.asset_name }}.sha256
-          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
-          path: |
-            ${{ matrix.asset_name }}.${{ matrix.archive_format }}
-            ${{ matrix.asset_name }}.sha256
+          path: ${{ matrix.asset_name }}.${{ matrix.archive_format }}
 
   # 发布任务
   release:
@@ -126,8 +120,6 @@ jobs:
           git log --pretty=format:"- %s" $PREV_TAG..$CURRENT_TAG >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Installation" >> RELEASE_NOTES.md
-          echo "Download the appropriate package for your platform and add to your PATH." >> RELEASE_NOTES.md
-          echo "Verify the integrity with the provided SHA256 checksum." >> RELEASE_NOTES.md
 
       - name: Create GitHub Release
         id: create_release
@@ -141,7 +133,6 @@ jobs:
           files: |
             release-artifacts/*.tar.gz
             release-artifacts/*.zip
-            release-artifacts/*.sha256
 
       - name: Notify on success
         if: success()
