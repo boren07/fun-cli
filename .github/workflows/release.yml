@@ -37,6 +37,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      # 安装系统依赖
+      - name: Install system dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest' && matrix.system_deps != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.system_deps }}
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -75,7 +81,7 @@ jobs:
           
           # 生成校验和
           if [ "${{ runner.os }}" = "Windows" ]; then
-            certutil -hashfile ${{ matrix.asset_name }}.${{ matrix.archive_format }} SHA256 | findstr /v "SHA256" | findstr /v "CertUtil" > ${{ matrix.asset_name }}.sha256
+            certutil -hashfile ${{ matrix.asset_name }}.${{ matrix.archive_format }} SHA256 | findstr /r /c:"^[A-F0-9]*$" > ${{ matrix.asset_name }}.sha256
           else
             shasum -a 256 ${{ matrix.asset_name }}.${{ matrix.archive_format }} > ${{ matrix.asset_name }}.sha256
           fi
