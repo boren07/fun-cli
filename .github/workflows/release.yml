@@ -120,6 +120,7 @@ jobs:
           git log --pretty=format:"- %s" $PREV_TAG..$CURRENT_TAG >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Installation" >> RELEASE_NOTES.md
+          echo "Download the appropriate package for your platform and add to your PATH." >> RELEASE_NOTES.md
 
       - name: Create GitHub Release
         id: create_release
