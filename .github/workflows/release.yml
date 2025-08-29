@@ -72,17 +72,20 @@ jobs:
           # 创建临时目录
           mkdir -p release-artifacts
           
-          # 复制二进制文件
-          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} release-artifacts/
+          # 复制二进制文件到临时目录（确保源文件存在）
+          cp "target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" "release-artifacts/" || { echo "二进制文件不存在！"; exit 1; }
           
-          # 生成压缩包
+          # 重命名二进制文件（提前重命名，避免压缩包内文件名混乱）
+          mv "release-artifacts/${{ matrix.artifact_name }}" "release-artifacts/${{ matrix.asset_name }}"
+          
+          # 生成压缩包（基于重命名后的文件）
           if [ "${{ matrix.archive_format }}" = "tar.gz" ]; then
-            tar -czf ${{ matrix.asset_name }}.tar.gz -C release-artifacts ${{ matrix.artifact_name }}
+            # 使用重命名后的文件名打包，确保压缩包内文件名为 asset_name
+            tar -czf "${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
           else
-            7z a -tzip ${{ matrix.asset_name }}.zip ./release-artifacts/*
+            # Windows 压缩命令保持不变（但需确保 7z 可用）
+            7z a -tzip "${{ matrix.asset_name }}.zip" ./release-artifacts/*
           fi
-          # 重命名单独的可执行文件，便于识别
-          mv release-artifacts/${{ matrix.artifact_name }} release-artifacts/${{ matrix.asset_name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
