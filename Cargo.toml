@@ -28,6 +28,8 @@ unicode-width = "0.2.0"
 
 #获取系统信息
 sysinfo = "0.31"
+# 获取网络套接字信息
+netstat2 = "0.11"
 
 [[bin]]
 name = "fun"

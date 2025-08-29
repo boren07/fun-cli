@@ -40,7 +40,7 @@ pub struct Panel<T: Widget> {
     title: String,
     child: T, // 面板内的子组件
     focused: bool,
-    theme: Theme, // 主题
+    theme: Theme, // 主题，
 }
 
 impl<T: Widget> Panel<T> {
@@ -134,10 +134,14 @@ pub struct List<T: Display> {
     scroll_offset: usize, // 滚动偏移量（处理内容超出可视区域）
     focused: bool, // 是否获得焦点
     theme: Theme, // 主题
+    padding: u16, // 内边距
 }
 
 impl<T: Display> List<T> {
     pub fn new(left_top: Coordinate, right_bottom: Coordinate, theme: Theme) -> Self {
+        Self::new_with_padding(left_top, right_bottom, theme,0)
+    }
+    pub fn new_with_padding(left_top: Coordinate, right_bottom: Coordinate, theme: Theme, padding: u16) -> Self {
         Self {
             width: right_bottom.x -  left_top.x,
             height: right_bottom.y - left_top.y,
@@ -147,9 +151,9 @@ impl<T: Display> List<T> {
             scroll_offset: 0,
             focused: false,
             theme,
+            padding,
         }
     }
-
     pub fn set_items(&mut self, items: Vec<T>)  {
         self.items = items;
         self.selected_idx = 0;
@@ -181,17 +185,17 @@ impl<T: Display> Widget for List<T> {
     fn width(&self) -> u16 { self.width }
     fn height(&self) -> u16 { self.height }
 
-    fn render(&self, stdout: &mut io::Stdout) -> io::Result<()> {
+    fn render(&self, stdout: &mut Stdout) -> io::Result<()> {
         let visible_lines = (self.height) as usize;
         let display_items = &self.items[self.scroll_offset..std::cmp::min(
             self.scroll_offset + visible_lines,
             self.items.len()
         )];
-
+        queue!(stdout,ResetColor)?;
         // 渲染列表项
         for (i, item) in display_items.iter().enumerate() {
-            let line_y = self.coordinate.y + 1 + i as u16; // 从边框内第一行开始
-            queue!(stdout,MoveTo(self.coordinate.x + 1, line_y),SetForegroundColor(self.theme.primary_text_color()))?;
+            let line_y = self.coordinate.y + self.padding  + i as u16;
+            queue!(stdout,MoveTo(self.coordinate.x+ self.padding , line_y),SetForegroundColor(self.theme.primary_text_color()))?;
             // 选中项高亮
             if self.focused && self.scroll_offset + i == self.selected_idx {
                 queue!(stdout,SetForegroundColor(self.theme.highlight_color()))?;
@@ -212,7 +216,7 @@ impl<T: Display> Widget for List<T> {
     }
 
     fn handle_event(&mut self, event: KeyCode) -> bool {
-        if !self.focused || self.items.is_empty() {
+        if self.items.is_empty() {
             return false;
         }
 

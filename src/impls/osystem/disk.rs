@@ -32,8 +32,8 @@ impl DiskWidget {
             theme,
             disks: Disks::new_with_refreshed_list().list().iter().map(|disk| {
                 DiskInfo {
-                    name: disk.name().to_str().unwrap().to_string(),
-                    file_system: disk.file_system().to_str().unwrap().to_string(),
+                    name: disk.name().to_str().unwrap_or(consts::UNKNOWN).to_string(),
+                    file_system: disk.file_system().to_str().unwrap_or(consts::UNKNOWN).to_string(),
                     kind: disk.kind().to_string(),
                     total: disk.total_space(),
                     available: disk.available_space(),
@@ -68,7 +68,7 @@ impl Widget for DiskWidget {
         let disk = self.disks.get(0).unwrap();
         queue!(stdout, MoveTo(x,y),  Print(format!("磁盘名称:     {:>12}", disk.name)))?;
         queue!(stdout, MoveTo(x,y+1),Print(format!("文件系统类型:  {:>12}", disk.file_system)))?;
-        queue!(stdout, MoveTo(x,y+2),Print(format!("磁盘类型:     {:>12}", disk.kind)))?;
+        queue!(stdout, MoveTo(x,y+2),Print(format!("磁盘类型:      {:>12}", disk.kind)))?;
         queue!(stdout, MoveTo(x,y+3),Print(format!("磁盘总空间:    {:>10}GB", disk.total/consts::SIZE_GB)))?;
         queue!(stdout, MoveTo(x,y+4),Print(format!("可用空间:      {:>10}GB", disk.available/consts::SIZE_GB)))?;
         Ok(())

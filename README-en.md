@@ -2,12 +2,13 @@
 
 # 🎮 `fun-cli` —— **Your Terminal Playground**
 
-> *"Life is too short for boring CLI tools."*
+> *"Life is too long,there are too few interesting CLIs."*
 
 **`fun-cli` is a constantly growing command-line entertainment toolkit** designed for those who find work boring. Here, you can:
 - ☔ Get weather updates with some sarcasm 
 - 🎵 Play music with an ASCII spectrum 
 - 🕹️ Play Thunder Fighter (*Immersive play, press `Q` to exit*)
+- 💻 monitor your computer,Has a cool monitoring panel
 - ...**or contribute your own creative ideas!**
 
 [![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
@@ -19,8 +20,12 @@
 ## 🚀 **Why Join?**
 - Practice programming in the happiest way **Happiness is the fundamental motivation for programming**
 - No serious code reviews needed, **fun is the primary productivity**
+- Get rid of repetitive and boring work cycles , **enjoy the most primitive joy of programming**
 
 ## 📦 **Quick Start**
+> Install from source
+
+**Environment requirements:  Rust ≥1.80**
 ```bash
 # Clone the repository (requires Rust ≥1.80)
 git clone https://github.com/boren07/fun-cli.git
