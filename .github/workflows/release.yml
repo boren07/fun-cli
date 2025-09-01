@@ -80,7 +80,8 @@ jobs:
             tar -czf "release-artifacts/${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
           else
             # 去掉 asset_name 中的 .exe 后缀用于压缩
-            asset_name_without_exe=$(echo "${{ matrix.asset_name }}" | sed 's/\.exe$//')
+            asset_name_without_exe="${{ matrix.asset_name }}"
+            asset_name_without_exe="${asset_name_without_exe%.*}"
             7z a -tzip "release-artifacts/${{ asset_name_without_exe }}.zip" ./release-artifacts/*
           fi
           
