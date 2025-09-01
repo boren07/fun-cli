@@ -79,7 +79,9 @@ jobs:
           if [ "${{ matrix.archive_format }}" = "tar.gz" ]; then
             tar -czf "release-artifacts/${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
           else
-            7z a -tzip "release-artifacts/${{ matrix.asset_name }}.zip" ./release-artifacts/*
+            # 去掉 asset_name 中的 .exe 后缀用于压缩
+            asset_name_without_exe="${{ matrix.asset_name/.exe/}}"
+            7z a -tzip "release-artifacts/${{ asset_name_without_exe }}.zip" ./release-artifacts/*
           fi
           
           # 验证文件是否生成（用于调试）

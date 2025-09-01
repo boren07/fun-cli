@@ -230,7 +230,7 @@ impl Game for ThunderFighterGame {
         let mut stdout = stdout();
         execute!(stdout,cursor::Hide)?;
         // terminal::enable_raw_mode()?;
-        execute!(stdout, Clear(ClearType::All), cursor::MoveTo(0, 0))?;
+        execute!(stdout, EnterAlternateScreen,Clear(ClearType::All), cursor::MoveTo(0, 0))?;
         let g1 = game.clone();
         {
             let mut game_state = g1.lock().unwrap();

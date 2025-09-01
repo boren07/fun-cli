@@ -213,7 +213,6 @@ impl CommandHandler for OsHandler {
         let mut stdout = stdout();
         let mut sys = System::new_all();
         // enable_raw_mode()?;
-        // ,EnterAlternateScreen
         execute!(stdout,
             EnterAlternateScreen,
             SetBackgroundColor(self.theme.background_color()))?;
@@ -253,7 +252,7 @@ impl CommandHandler for OsHandler {
             last_refresh+=1;
             execute!(stdout,Clear(ClearType::All))?;
         }
-        disable_raw_mode()?;
+        // disable_raw_mode()?;
         //恢复终端
         execute!(stdout, LeaveAlternateScreen, Show)?;
         Ok(())
