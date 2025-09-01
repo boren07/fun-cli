@@ -217,7 +217,6 @@ impl CommandHandler for OsHandler {
             EnterAlternateScreen,
             SetBackgroundColor(self.theme.background_color()))?;
         execute!(stdout,Clear(ClearType::All),Hide)?;
-
         let (terminal_width, terminal_height) = size()?;
         //terminal_width = terminal_width & !1 // 可以利用 & !1 对1按位取反操作。实现位运算向下取偶操作
         let (mut width, mut height) = match self.size {
