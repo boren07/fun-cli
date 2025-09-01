@@ -33,7 +33,7 @@ jobs:
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact_name: fun.exe
-            asset_name: fun-windows-x86_64
+            asset_name: fun-windows-x86_64.exe
             archive_format: zip
             system_deps: ""
 
