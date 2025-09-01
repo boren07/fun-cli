@@ -22,6 +22,7 @@ jobs:
             asset_name: fun-linux-x86_64
             archive_format: tar.gz
             system_deps: libasound2-dev
+            asset_name_without_exe: ""
           # macOS x86_64
           - os: macos-latest
             target: x86_64-apple-darwin
@@ -29,11 +30,13 @@ jobs:
             asset_name: fun-macos-x86_64
             archive_format: tar.gz
             system_deps: ""
+            asset_name_without_exe: ""
           # Windows x86_64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact_name: fun.exe
             asset_name: fun-windows-x86_64.exe
+            asset_name_without_exe: fun-windows-x86_64
             archive_format: zip
             system_deps: ""
 
@@ -80,9 +83,7 @@ jobs:
             tar -czf "release-artifacts/${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
           else
             # 去掉 asset_name 中的 .exe 后缀用于压缩
-            asset_name_without_exe="${{ matrix.asset_name }}"
-            asset_name_without_exe="${asset_name_without_exe%.*}"
-            7z a -tzip "release-artifacts/${{ asset_name_without_exe }}.zip" ./release-artifacts/*
+            7z a -tzip "release-artifacts/${{ matrix.asset_name_without_exe }}.zip" ./release-artifacts/*
           fi
           
           # 验证文件是否生成（用于调试）
