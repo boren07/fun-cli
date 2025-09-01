@@ -69,31 +69,32 @@ jobs:
       - name: Prepare release assets
         shell: bash
         run: |
-          # 创建临时目录
+          # 创建 artifacts 目录并验证
           mkdir -p release-artifacts
           
-          # 复制二进制文件到临时目录（确保源文件存在）
-          cp "target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" "release-artifacts/" || { echo "二进制文件不存在！"; exit 1; }
+          # 复制二进制文件
+          cp "target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" "release-artifacts/${{ matrix.asset_name }}"
           
-          # 重命名二进制文件（提前重命名，避免压缩包内文件名混乱）
-          mv "release-artifacts/${{ matrix.artifact_name }}" "release-artifacts/${{ matrix.asset_name }}"
-          
-          # 生成压缩包（基于重命名后的文件）
+          # 生成压缩包
           if [ "${{ matrix.archive_format }}" = "tar.gz" ]; then
-            # 使用重命名后的文件名打包，确保压缩包内文件名为 asset_name
-            tar -czf "${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
+            tar -czf "release-artifacts/${{ matrix.asset_name }}.tar.gz" -C release-artifacts "${{ matrix.asset_name }}"
           else
-            # Windows 压缩命令保持不变（但需确保 7z 可用）
-            7z a -tzip "${{ matrix.asset_name }}.zip" ./release-artifacts/*
+            7z a -tzip ${{ matrix.asset_name }}.zip ./release-artifacts/*
           fi
+          
+          # 验证文件是否生成（用于调试）
+          echo "生成的文件列表："
+          ls -la release-artifacts/
+          ls -la .
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
           path: |
-            release-artifacts/${{ matrix.asset_name }}  # 单独的可执行文件
-            ${{ matrix.asset_name }}.${{ matrix.archive_format }}  # 压缩包
+            release-artifacts/${{ matrix.asset_name }}  
+            release-artifacts/${{ matrix.asset_name }}.${{ matrix.archive_format }}
+          if-no-files-found: error  # 无文件时明确报错
 
   # 发布任务
   release:
@@ -139,11 +140,9 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-artifacts/**/*.tar.gz
-            release-artifacts/**/*.zip
-            release-artifacts/**/fun-linux-x86_64
-            release-artifacts/**/fun-macos-x86_64
-            release-artifacts/**/fun-windows-x86_64.exe
+            *.tar.gz
+            *.zip
+            release-artifacts/*
 
       - name: Notify on success
         if: success()
