@@ -95,7 +95,7 @@ jobs:
         with:
           name: ${{ matrix.asset_name }}
           path: |
-            release-artifacts/${{ matrix.asset_name }}  
+            release-artifacts/${{ matrix.asset_name_without_exe != '' && matrix.asset_name_without_exe || matrix.asset_name }}  
             release-artifacts/${{ matrix.asset_name }}.${{ matrix.archive_format }}
           if-no-files-found: error  # 无文件时明确报错
 
