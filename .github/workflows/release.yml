@@ -31,6 +31,13 @@ jobs:
             archive_format: tar.gz
             system_deps: ""
             asset_name_without_exe: ""
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: fun
+            asset_name: fun-macos-aarch64
+            archive_format: tar.gz
+            system_deps: ""
+            asset_name_without_exe: ""
           # Windows x86_64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
