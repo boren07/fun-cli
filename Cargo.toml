@@ -2,7 +2,7 @@
 name = "fun-cli"
 version = "1.0.0"
 edition = "2024"
-description = "Life is too short for boring CLI tools."
+description = "Life is too long, but fun CLIs are too few."
 repository = "https://github.com/boren07/fun-cli"
 authors = ["boren1007@qq.com"]
 license = "Apache-2.0"

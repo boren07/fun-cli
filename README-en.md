@@ -2,14 +2,16 @@
 
 # 🎮 `fun-cli` —— **Your Terminal Playground**
 
-> *"Life is too short for boring CLI tools."*
+> *"Life is too long, but fun CLIs are too few"*
 
 **`fun-cli` is a constantly growing command-line entertainment toolkit** designed for those who find work boring. Here, you can:
-- ☔ Get weather updates with some sarcasm 
-- 🎵 Play music with an ASCII spectrum 
-- 🕹️ Play Thunder Fighter (*Immersive play, press `Q` to exit*)
-- 💻 monitor your computer,Has a cool monitoring panel
+- ☔ Check the weather for your family and friends anytime
+- 🎵 Play your favorite music with an ASCII spectrum
+- 🕹️ Play Thunder Fighter and relive childhood joy (Immersive gameplay, press Q to exit)
+- 💻 Monitor your computer with a cool monitoring panel
+- 📝 Run on all platforms (Windows, MacOS, Linux)
 - ...**or contribute your own creative ideas!**
+
 
 [![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -17,13 +19,20 @@
 [![Forks](https://img.shields.io/github/forks/boren07/fun-cli?logo=github)](https://github.com/boren07/fun-cli/network/members)
 [![Fun CLI](https://img.shields.io/badge/fun-cli)](https://github.com/boren07/fun-cli)
 
-## 🚀 **Why Join?**
-- Practice programming in the happiest way **Happiness is the fundamental motivation for programming**
-- No serious code reviews needed, **fun is the primary productivity**
-- Get rid of repetitive and boring work cycles , **enjoy the most primitive joy of programming**
 
 ## 📦 **Quick Start**
-> Install from source
+
+### Install from release package (supports all platforms)
+
+1. Download the latest release package => [release](https://github.com/boren07/fun-cli/releases)
+2. Add to your environment variable PATH
+3. Congratulations! You can start having fun now
+```bash
+fun -h    # View help
+```
+
+
+### Install from source
 
 **Environment requirements:  Rust ≥1.80**
 ```bash
@@ -41,6 +50,12 @@ cargo test -- --nocapture # Prevent output from being swallowed
 # Congratulations! You can start having fun
 fun -h # View help
 ```
+## 🚀 **Why Join?**
+- Practice programming in the happiest way **Happiness is the fundamental motivation for programming**
+- No serious code reviews needed, **fun is the primary productivity**
+- Get rid of repetitive and boring work cycles , **enjoy the most primitive joy of programming**
+
+
 ## 🤝 **How to Contribute?**
 1. Submit a PR with: a description of the feature
 2. While coding, chant "the borrow checker is my friend" three times
