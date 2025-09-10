@@ -1,5 +1,19 @@
 [English](README-en.md)
 
+<div align="center">
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Stars](https://img.shields.io/github/stars/borenchan/fun-cli?logo=github)](https://github.com/borenchan/fun-cli/stargazers)
+[![Forks](https://img.shields.io/github/forks/borenchan/fun-cli?logo=github)](https://github.com/borenchan/fun-cli/network/members)
+[![GitHub last commit](https://img.shields.io/github/last-commit/mxsm/rocketmq-rust)](https://github.com/mxsm/rocketmq-rust/commits/main)
+![GitHub repo size](https://img.shields.io/github/repo-size/borenchan/fun-cli)
+![Static Badge](https://img.shields.io/badge/MSRV-1.80.0%2B-25b373)
+<br/>
+[![Fun CLI](https://img.shields.io/badge/fun-cli)](https://github.com/borenchan/fun-cli)
+[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+
+</div>
+
 # 🎮 `fun-cli` —— **你的终端游乐场**  
 
 > *"人生太长，有趣的CLI太少"*  
@@ -12,19 +26,12 @@
 - 📝 运行在  **所有平台** （*Windows,MacOS,Linux*）
 - ...**或者贡献你的奇思妙想！**  
 
-[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Stars](https://img.shields.io/github/stars/boren07/fun-cli?logo=github)](https://github.com/boren07/fun-cli/stargazers)  
-[![Forks](https://img.shields.io/github/forks/boren07/fun-cli?logo=github)](https://github.com/boren07/fun-cli/network/members)
-[![Fun CLI](https://img.shields.io/badge/fun-cli)](https://github.com/boren07/fun-cli)
-
-
 
 ## 📦 **快速开始**  
 
 ### 从发行包安装（支持所有平台）
 
-1. 下载最新版发行包 =>  [release](https://github.com/boren07/fun-cli/releases)
+1. 下载最新版发行包 =>  [release](https://github.com/borenchan/fun-cli/releases)
 2. 添加到您的环境变量 `PATH`
 3. 恭喜你！可以开始愉快的玩耍了
 ```bash
@@ -38,7 +45,7 @@ fun -h    # 查看帮助
 **环境要求：需要 Rust ≥1.80**
 ```bash
 # 克隆仓库
-git clone https://github.com/boren07/fun-cli.git
+git clone https://github.com/borenchan/fun-cli.git
 cd fun-cli
 
 # 编译并安装

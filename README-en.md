@@ -1,5 +1,19 @@
 [简体中文](README.md)
 
+<div align="center">
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Stars](https://img.shields.io/github/stars/borenchan/fun-cli?logo=github)](https://github.com/borenchan/fun-cli/stargazers)
+[![Forks](https://img.shields.io/github/forks/borenchan/fun-cli?logo=github)](https://github.com/borenchan/fun-cli/network/members)
+[![GitHub last commit](https://img.shields.io/github/last-commit/mxsm/rocketmq-rust)](https://github.com/mxsm/rocketmq-rust/commits/main)
+![GitHub repo size](https://img.shields.io/github/repo-size/borenchan/fun-cli)
+![Static Badge](https://img.shields.io/badge/MSRV-1.80.0%2B-25b373)
+<br/>
+[![Fun CLI](https://img.shields.io/badge/fun-cli)](https://github.com/borenchan/fun-cli)
+[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+
+</div>
+
 # 🎮 `fun-cli` —— **Your Terminal Playground**
 
 > *"Life is too long, but fun CLIs are too few"*
@@ -13,18 +27,11 @@
 - ...**or contribute your own creative ideas!**
 
 
-[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Stars](https://img.shields.io/github/stars/boren07/fun-cli?logo=github)](https://github.com/boren07/fun-cli/stargazers)  
-[![Forks](https://img.shields.io/github/forks/boren07/fun-cli?logo=github)](https://github.com/boren07/fun-cli/network/members)
-[![Fun CLI](https://img.shields.io/badge/fun-cli)](https://github.com/boren07/fun-cli)
-
-
 ## 📦 **Quick Start**
 
 ### Install from release package (supports all platforms)
 
-1. Download the latest release package => [release](https://github.com/boren07/fun-cli/releases)
+1. Download the latest release package => [release](https://github.com/borenchan/fun-cli/releases)
 2. Add to your environment variable PATH
 3. Congratulations! You can start having fun now
 ```bash
@@ -37,7 +44,7 @@ fun -h    # View help
 **Environment requirements:  Rust ≥1.80**
 ```bash
 # Clone the repository (requires Rust ≥1.80)
-git clone https://github.com/boren07/fun-cli.git
+git clone https://github.com/borenchan/fun-cli.git
 cd fun-cli
 
 # Build and install
